@@ -6,5 +6,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'my-dream-app';
+  loadedFeature: string = 'recipes-link';
+
+  onNavigate(linkName: string) {
+    this.loadedFeature = linkName;
+  }
+
+  isActive(linkName: string): boolean {
+    return linkName === this.loadedFeature;
+  }
 }
