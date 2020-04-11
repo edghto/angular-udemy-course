@@ -6,27 +6,27 @@ import { Subject } from 'rxjs';
 
 @Injectable()
 export class RecipeService {
-    private recipes: Recipe[] = [
-        new Recipe(
-            'Tasty Schnitzel',
-            'A super-tasty Schnitzel - just awesome!',
-            'https://st2.depositphotos.com/3394061/5904/i/950/depositphotos_59047843-stock-photo-schnitzel-with-french-fries-and.jpg',
-            [
-                new Ingredient('Meat', 1),
-                new Ingredient('French Fries', 20),
-            ]
-        ),
-        new Recipe(
-            'Big Fat Burger',
-            'What else you need to say',
-            'https://media-cdn.tripadvisor.com/media/photo-s/05/33/d4/53/the-loft.jpg',
-            [
-                new Ingredient('Buns', 2),
-                new Ingredient('Meat', 1),
-            ]
-        ),
-
-    ];
+    private recipes: Recipe[] = [];
+    // [
+    //     new Recipe(
+    //         'Tasty Schnitzel',
+    //         'A super-tasty Schnitzel - just awesome!',
+    //         'https://st2.depositphotos.com/3394061/5904/i/950/depositphotos_59047843-stock-photo-schnitzel-with-french-fries-and.jpg',
+    //         [
+    //             new Ingredient('Meat', 1),
+    //             new Ingredient('French Fries', 20),
+    //         ]
+    //     ),
+    //     new Recipe(
+    //         'Big Fat Burger',
+    //         'What else you need to say',
+    //         'https://media-cdn.tripadvisor.com/media/photo-s/05/33/d4/53/the-loft.jpg',
+    //         [
+    //             new Ingredient('Buns', 2),
+    //             new Ingredient('Meat', 1),
+    //         ]
+    //     ),
+    // ];
     recipesChanged = new Subject<Recipe[]>();
 
     constructor(private slService: ShoppingListService) { }
@@ -41,6 +41,11 @@ export class RecipeService {
 
     getRecipe(index: number): Recipe {
         return this.recipes[index];
+    }
+
+    setRecipes(recipes: Recipe[]) {
+        this.recipes = recipes;
+        this.recipesChanged.next(this.getRecipes());
     }
 
     addRecipe(recipe: Recipe) {
