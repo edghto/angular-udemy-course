@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { map, tap } from 'rxjs/operators';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { map, tap, take, exhaustMap } from 'rxjs/operators';
 
 import { RecipeService } from '../recipes/recipe.service';
 import { Recipe } from '../recipes/recipe.model';
+import { AuthService } from '../auth/auth.service';
 
 @Injectable({
     providedIn: 'root',
@@ -11,7 +12,7 @@ import { Recipe } from '../recipes/recipe.model';
 export class DataStorageService {
     private static readonly API_BASE = 'https://ng-course-recipe-book-680d6.firebaseio.com';
 
-    constructor(private http: HttpClient, private recipesService: RecipeService) { }
+    constructor(private http: HttpClient, private recipesService: RecipeService, private authService: AuthService) { }
 
     storeRecipes() {
         this.http.put(
@@ -23,9 +24,14 @@ export class DataStorageService {
     }
 
     fetchRecipes() {
-        return this.http.get<Recipe[]>(
-            DataStorageService.API_BASE + '/recipes.json'
-        ).pipe(
+        return this.authService.user.pipe(
+            take(1),
+            exhaustMap(user => {
+                return this.http.get<Recipe[]>(
+                    DataStorageService.API_BASE + '/recipes.json', {
+                        params: new HttpParams().set('auth', user.token)
+                    })
+            }),
             map(recipes => {
                 return recipes.map((recipe: Recipe) => {
                     return { ...recipe, ingredients: recipe.ingredients ? recipe.ingredients : [] }
